@@ -1,20 +1,22 @@
 import math
 import matplotlib.pyplot as plt
-
-
+from matplotlib.backends.backend_pdf import PdfPages
 
 print("Car Braking Simulator \n");
-
 
 # input the initial velocity of the car (in km/hr)
 
 while True:
-    v0_kmh = float(input("Enter the initial velocity of the car before braking (in km/hr): "))
-    if v0_kmh <= 0:
-        print("Incorrect choice, the initial velocity must be greater than 0 \n")
-    else:
-        print("Your input velocity before braking is: \n", v0_kmh,"km/hr")
-        break
+    v0_kmh = input("Enter the initial velocity of the car before braking (in km/hr): ")
+    try:
+        v0_kmh = float(v0_kmh)
+        if v0_kmh <= 0:
+            raise ValueError
+    except ValueError:
+        print("Incorrect choice, the initial velocity must be greater than 0")
+        continue
+    print(f'Your input velocity before braking is: {v0_kmh} km/hr')
+    break
 
 # convert the initial velocity to m/s
 
@@ -23,94 +25,74 @@ v0 = v0_kmh * 0.277778
 # create a list of initial velocities
 v = list(range(0, int(v0+1), 10))
 
-
 # input the road type
 
+valid_road_types = ["concrete", "ice", "water", "gravel", "sand"]
 while True:
     road_type = input("Enter the road type (concrete, ice, water, gravel, sand): ")
-    if road_type not in ["concrete","ice","water","gravel","sand"]:
-        print("Incorrect choice, the road type must be one of these options: concrete, ice, water, gravel, sand \n")
-    else:
+    if road_type in valid_road_types:
         print("Your input road type is: \n", road_type)
         break
+    else:
+        print("Incorrect choice, the road type must be one of these options: ", valid_road_types)
 
 # input the road condition
 
+valid_road_conditions = ["dry", "wet", "aquaplaning"]
 while True:
     road_condition = input("Enter the road condition (dry, wet, aquaplaning): \n")
-    if road_condition not in ["dry","wet","aquaplaning"]:
-        print("Incorrect choice, the road type must be one of these options: dry, wet, aquaplaning)")
-    else:
-        print("Your input road type is:\n", road_condition)
+    if road_condition in valid_road_conditions:
+        print("Your input road condition is:\n", road_condition)
         break
+    else:
+        print("Incorrect choice, the road condition must be one of these options: ", valid_road_conditions)
 
 # input the coefficient of friction type
 
+valid_friction_types = ["static", "dynamic"]
 while True:
-    friction_type = input("Enter the coefficient of friction type (static or dynamic): \n")
-    if friction_type not in ["static","dynamic"]:
-        print("Incorrect choice, the friction type must be one of these options: static or dynamic)")
-    else:
+    friction_type = input("Enter the coefficient of friction type (static or dynamic): \n").lower()
+    if friction_type in valid_friction_types:
         print("Your input friction type is:\n", friction_type)
         break
+    else:
+        print("Incorrect choice, the friction type must be one of these options: ", valid_friction_types)
 
 # input the inclination angle of the road
 while True:
-    incline = float(input("Enter the inclination angle of the road (in degrees): "))
-    if incline < -90 or incline > 90:
-        print("Incorrect choice, the inclination angle must be between -90 and 90 degrees.\n")
-    else:
-        print("Your input inclination angle is: \n", incline,"degrees")
-        break
-
+    incline = input("Enter the inclination angle of the road (in degrees): ")
+    try:
+        incline = float(incline)
+        if incline < -90 or incline > 90:
+            raise ValueError
+    except ValueError:
+        print("Incorrect choice, the inclination angle must be between -90 and 90 degrees.")
+        continue
+    print(f'Your input inclination angle is: {incline} degrees')
+    break
 
 # set the coefficient of friction based on road type, condition and type
 #if none of the options provided in the task's table, mu will be set to 0.8 
 #longer method of if and elif was used instead of dictionary as it's basic 
 
-if road_type == "concrete":
-    if road_condition == "dry":
-        if friction_type == "static":
-            mu = 0.65
-        elif friction_type == "dynamic":
-            mu = 0.5
-    elif road_condition == "wet":
-        if friction_type == "static":
-            mu = 0.4
-        elif friction_type == "dynamic":
-            mu = 0.35
-elif road_type == "ice":
-    if road_condition == "dry":
-        if friction_type == "static":
-            mu = 0.2
-        elif friction_type == "dynamic":
-            mu = 0.15
-    elif road_condition == "wet":
-        if friction_type == "static":
-            mu = 0.1
-        elif friction_type == "dynamic":
-            mu = 0.08
-elif road_type == "water":
-    if road_condition == "aquaplaning":
-        if friction_type == "static":
-            mu = 0.1
-        elif friction_type == "dynamic":
-            mu = 0.05
-elif road_type == "gravel":
-    if road_condition == "dry":
-        if friction_type == "static":
-            mu = 0.8
-        elif friction_type == "dynamic":
-            mu = 0.35
-elif road_type == "sand":
-    if road_condition == "dry":
-        if friction_type == "static":
-            mu = 0.8
-        elif friction_type == "dynamic":
-            mu = 0.3
-else:
-    mu = 0.8
+coefficients = {
+    ("concrete", "dry", "static"): 0.65,
+    ("concrete", "dry", "dynamic"): 0.5,
+    ("concrete", "wet", "static"): 0.4,
+    ("concrete", "wet", "dynamic"): 0.35,
+    ("ice", "dry", "static"): 0.2,
+    ("ice", "dry", "dynamic"): 0.15,
+    ("ice", "wet", "static"): 0.1,
+    ("ice", "wet", "dynamic"): 0.08,
+    ("water", "aquaplaning", "static"): 0.1,
+    ("water", "aquaplaning", "dynamic"): 0.05,
+    ("gravel", "dry", "static"): 0.8,
+    ("gravel", "dry", "dynamic"): 0.35,
+    ("sand", "dry", "static"): 0.8,
+    ("sand", "dry", "dynamic"): 0.3
+}
 
+mu = coefficients.get((road_type, road_condition, friction_type), 0.8)
 
 # calculate the corresponding braking distances using the formula:
 # braking distance = (v^2) / (2 * mu * g * inclination)
@@ -152,5 +134,6 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-# export the figure as a PDF file
-plt.savefig('braking_distance.pdf', format='pdf')
+plt.savefig("output.pdf")
+
+print("The plots have been exported to output.pdf")
