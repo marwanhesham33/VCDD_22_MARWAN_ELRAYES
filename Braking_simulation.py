@@ -4,7 +4,8 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 print("Car Braking Simulator \n");
 
-# input the initial velocity of the car (in km/hr)
+# input the initial velocity of the car (in km/hr) and checikng user data input through the while loop
+#and if wrong user added wrong ipnput an error will occur 
 
 while True:
     v0_kmh = input("Enter the initial velocity of the car before braking (in km/hr): ")
@@ -25,7 +26,7 @@ v0 = v0_kmh * 0.277778
 # create a list of initial velocities
 v = list(range(0, int(v0+1), 10))
 
-# input the road type
+# input the road type and checking that user choose from the valid road types only
 
 valid_road_types = ["concrete", "ice", "water", "gravel", "sand"]
 while True:
@@ -36,7 +37,7 @@ while True:
     else:
         print("Incorrect choice, the road type must be one of these options: ", valid_road_types)
 
-# input the road condition
+# input the road conditionnd checking that user choose from the valid road conditions only
 
 valid_road_conditions = ["dry", "wet", "aquaplaning"]
 while True:
@@ -47,7 +48,7 @@ while True:
     else:
         print("Incorrect choice, the road condition must be one of these options: ", valid_road_conditions)
 
-# input the coefficient of friction type
+# input the coefficient of friction type and checking that user choose from the valid friction types only
 
 valid_friction_types = ["static", "dynamic"]
 while True:
@@ -58,7 +59,7 @@ while True:
     else:
         print("Incorrect choice, the friction type must be one of these options: ", valid_friction_types)
 
-# input the inclination angle of the road
+# input the inclination angle of the road and checking that user choose an angle between -90 to +90 
 while True:
     incline = input("Enter the inclination angle of the road (in degrees): ")
     try:
@@ -71,9 +72,9 @@ while True:
     print(f'Your input inclination angle is: {incline} degrees')
     break
 
-# set the coefficient of friction based on road type, condition and type
+# set the coefficient of friction based on road type and it's condition type
 #if none of the options provided in the task's table, mu will be set to 0.8 
-#longer method of if and elif was used instead of dictionary as it's basic 
+#Dictionary was used to store data 
 
 coefficients = {
     ("concrete", "dry", "static"): 0.65,
