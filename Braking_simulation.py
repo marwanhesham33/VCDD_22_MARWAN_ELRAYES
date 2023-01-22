@@ -1,8 +1,20 @@
 import math
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+from os import system, name
+from time import sleep
 
 print("Car Braking Simulator \n");
+
+# code idea from https://www.geeksforgeeks.org/clear-screen-python/
+def clear():
+ 
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+ 
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
 # input the initial velocity of the car (in km/hr) and checikng user data input through the while loop
 #and if wrong user added wrong ipnput an error will occur 
@@ -134,6 +146,12 @@ plt.title('Braking time vs. Initial velocity')
 plt.legend()
 plt.grid(True)
 plt.show()
+
+# sleep for 6 seconds after printing output
+sleep(6)
+ 
+# now call function we defined above
+clear()
 
 plt.savefig("output.pdf")
 
